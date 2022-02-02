@@ -1,6 +1,6 @@
 {application, ps, [
 	{description, "Sucht nahe Postleitzahlen"},
-	{vsn, "0.0.0"},
+	{vsn, "1.0.0"},
 
 	{registered, []},
 	{mod, {ps_app, []}},
