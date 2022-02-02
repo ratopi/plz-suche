@@ -12,7 +12,7 @@
 -include_lib("common_test/include/ct.hrl").
 
 %% Test cases
--export([find_one/1, find_none/1]).
+-export([find_one/1, find_none/1, find_nearest/1, find_nearest_by_loc/1]).
 
 %% Test server callbacks
 -export([suite/0, all/0, init_per_suite/1, end_per_suite/1, init_per_testcase/2, end_per_testcase/2]).
@@ -26,7 +26,9 @@
 all() ->
 	[
 		find_one,
-		find_none
+		find_none,
+		find_nearest,
+		find_nearest_by_loc
 	].
 
 
@@ -62,6 +64,16 @@ find_none(_Config) ->
 	DB = ps_db:new(test_data()),
 	Plz = <<"70599">>,
 	not_found = ps_db:get_by_plz(DB, Plz).
+
+find_nearest(_Config) ->
+	DB = ps_db:new(test_data()),
+	Plz = <<"60599">>,
+	{ok, [{0.0, {<<"60599">>, <<"Frankfurt am Main">>, {50.086608543744, 8.71529986677625}}}]} = ps_db:find_nearest(DB, Plz, 0).
+
+find_nearest_by_loc(_Config) ->
+	DB = ps_db:new(test_data()),
+	Plz = <<"60599">>,
+	{ok, [{0.0, {<<"60599">>, <<"Frankfurt am Main">>, {50.086608543744, 8.71529986677625}}}]} = ps_db:find_nearest(DB, {50.086608543744, 8.71529986677625}, 0).
 
 
 %%%===================================================================

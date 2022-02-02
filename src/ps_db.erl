@@ -26,13 +26,17 @@ get_by_plz(#ps_db{entries = Entries}, Plz) when is_binary(Plz) ->
 	inner_get_by_plz(Plz, Entries).
 
 
-find_nearest(DB = #ps_db{entries = Entries}, Plz, MaxDistance) ->
+find_nearest(DB = #ps_db{}, Plz, MaxDistance) when is_binary(Plz) ->
 	case get_by_plz(DB, Plz) of
 		not_found ->
 			not_found;
-		{ok, Entry} ->
-			{ok, lists:sort(find_next(Entry, Entries, MaxDistance * MaxDistance, []))}
-	end.
+		{ok, {_, _, Loc}} ->
+			find_nearest(DB, Loc, MaxDistance)
+	end;
+
+find_nearest(#ps_db{entries = Entries}, Loc = {Lat, Lon}, MaxDistance) when is_number(Lat), is_number(Lon) ->
+	{ok, lists:sort(find_next(Loc, Entries, MaxDistance * MaxDistance, []))}.
+
 
 %%%===================================================================
 %%% Internal functions
@@ -62,14 +66,14 @@ inner_get_by_plz(Plz, [_ | T]) ->
 
 
 
-find_next(_Entry, [], _MaxDistance2, Result) ->
+find_next(_Loc, [], _MaxDistance2, Result) ->
 	Result;
 
-find_next(Entry = {_, _, Loc1}, [E2 = {_, _, Loc2} | Entries], MaxDistance2, Result) ->
+find_next(Loc1, [E2 = {_, _, Loc2} | Entries], MaxDistance2, Result) ->
 	Distance2 = ps_distance:distance2(Loc1, Loc2),
 	case Distance2 > MaxDistance2 of
 		true ->
-			find_next(Entry, Entries, MaxDistance2, Result);
+			find_next(Loc1, Entries, MaxDistance2, Result);
 		false ->
-			find_next(Entry, Entries, MaxDistance2, [{math:sqrt(Distance2), E2} | Result])
+			find_next(Loc1, Entries, MaxDistance2, [{math:sqrt(Distance2), E2} | Result])
 	end.
