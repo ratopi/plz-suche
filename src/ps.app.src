@@ -1,0 +1,20 @@
+{application, ps, [
+	{description, "Sucht nahe Postleitzahlen"},
+	{vsn, "0.0.0"},
+
+	{registered, []},
+	{mod, {ps_app, []}},
+
+	{applications, [
+		kernel,
+		stdlib
+	]},
+
+	{env, [
+		{plz_url, <<"https://raw.githubusercontent.com/ratopi/opengeodb/master/PLZ.tab.json">>}
+	]},
+	{modules, []},
+
+	{licenses, ["Apache 2.0"]},
+	{links, []}
+]}.
