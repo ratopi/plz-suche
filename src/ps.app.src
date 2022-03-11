@@ -11,7 +11,7 @@
 	]},
 
 	{env, [
-		{plz_url, <<"https://raw.githubusercontent.com/ratopi/opengeodb/master/PLZ.tab.json">>}
+		{plz_url, <<"https://ratopi.github.io/opengeodb/PLZ.tab.json">>}
 	]},
 	{modules, []},
 
